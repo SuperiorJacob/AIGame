@@ -28,7 +28,7 @@ public:
 
 	Graph2D::PFNode* Contains(std::vector<Graph2D::PFNode*> list, Graph2D::Node* findNode);
 
-	PFNode* PathFind(Node* find);
+	PFNode* PathFind(Node* start, Node* find);
 
 private:
 protected:

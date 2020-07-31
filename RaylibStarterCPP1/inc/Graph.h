@@ -14,6 +14,7 @@ public:
 	{
 		TNodeData data;
 		std::vector<Edge> connections;
+		Node* onto = nullptr;
 	};
 
 	struct Edge

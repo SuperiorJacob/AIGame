@@ -45,9 +45,9 @@ Graph2D::PFNode* Graph2D::Contains(std::vector<Graph2D::PFNode*> list, Graph2D::
 	return nullptr;
 }
 
-Graph2D::PFNode* Graph2D::PathFind(Node* find)
+Graph2D::PFNode* Graph2D::PathFind(Node* start, Node* find)
 {
-	PFNode* pf = new PFNode(GetNodes().front(), nullptr, 0);
+	PFNode* pf = new PFNode(start, nullptr, 0);
 
 	std::vector<PFNode*> stack;
 	std::vector<PFNode*> visited;
@@ -60,7 +60,10 @@ Graph2D::PFNode* Graph2D::PathFind(Node* find)
 		stack.pop_back();
 		visited.push_back(node);
 
-		Process(node, find);
+		if (Process(node, find))
+		{
+			return node;
+		}
 
 		for (auto edge : node->node->connections)
 		{

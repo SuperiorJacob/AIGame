@@ -48,17 +48,19 @@ void Application::Load()
 
 	m_graph = new Graph2D();
 
-	float spacing = 50;
+	float spacing = m_graphEditor->GetNodeRadius()/1.5;
 	int numRows = m_windowHeight / spacing - 2;
 	int numCols = m_windowWidth / spacing - 2;
+	//int numRows = 5;
+	//int numCols = 5;
 
 	for (int y = 0; y < numRows; y++)
 	{
 		for (int x = 0; x < numCols; x++)
 		{
 			m_graph->AddNode({
-				x * spacing + GetRandomValue(60, 80),
-				y * spacing + GetRandomValue(60, 80)
+				x * spacing + GetRandomValue(m_graphEditor->GetNodeRadius()/2, m_graphEditor->GetNodeRadius()),
+				y * spacing + GetRandomValue(m_graphEditor->GetNodeRadius()/2, m_graphEditor->GetNodeRadius())
 			});
 		}
 	}
@@ -81,7 +83,15 @@ void Application::Load()
 
 	m_graphEditor->SetGraph(m_graph);
 
-	m_graphEditor->GetGraph()->PathFind(m_graphEditor->GetGraph()->GetNodes().back());
+	// Path Finding Test
+	Graph2D::PFNode* updateFollow = m_graphEditor->GetGraph()->PathFind(m_graphEditor->GetGraph()->GetNodes().front(), m_graphEditor->GetGraph()->GetNodes().back());
+	
+	while (updateFollow != nullptr)
+	{
+		updateFollow->node->onto = updateFollow->parent != nullptr ? updateFollow->parent->node : updateFollow->node;
+		updateFollow = updateFollow->parent;
+	}
+	//
 }
 
 void Application::Unload()

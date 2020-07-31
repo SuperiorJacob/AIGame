@@ -74,6 +74,25 @@ void Graph2DEditor::Draw()
 		DrawCircleLines(node->data.x, node->data.y, 8, m_nodeOutlineColour);
 	}
 
+	// Draw if found
+	for (auto node : m_graph->GetNodes())
+	{
+		for (auto connection : node->connections)
+		{
+			if (node->onto == connection.to)
+				DrawLine(node->data.x, node->data.y, connection.to->data.x, connection.to->data.y, m_nodeFoundColour);
+		}
+	}
+
+	for (auto node : m_graph->GetNodes())
+	{
+		if (node->onto != nullptr)
+		{
+			DrawCircle(node->data.x, node->data.y, 8, m_nodeFoundColour);
+			DrawCircleLines(node->data.x, node->data.y, 8, m_nodeFoundColour);
+		}
+	}
+
 	// Draw a "preview" node where the mouse is
 	DrawCircle(mousePos.x, mousePos.y, 8, m_nodeColour);
 }

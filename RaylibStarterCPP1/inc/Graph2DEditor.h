@@ -37,6 +37,7 @@ protected:
 	Color m_nodeColour = PURPLE;
 	Color m_nodeOutlineColour = DARKPURPLE;
 	Color m_nodeLineColour = DARKPURPLE;
+	Color m_nodeFoundColour = WHITE;
 
 private:
 };
