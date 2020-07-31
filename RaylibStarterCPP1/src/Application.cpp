@@ -5,6 +5,10 @@
 #include "Player.h"
 #include "KeyboardBehaviour.h"
 
+#include "Graph.h"
+#include "Graph2D.h"
+#include "Graph2DEditor.h"
+
 Application::Application(int windowWidth, int windowHeight, const char* windowTitle) :
 	m_windowWidth(windowWidth),
 	m_windowHeight(windowHeight),
@@ -40,31 +44,63 @@ void Application::Run()
 
 void Application::Load()
 {
-	m_player1 = new Player();
-	m_player1->SetPosition({ m_windowWidth * 0.25f, m_windowHeight/2.0f });
-	m_player1->SetFriction(1.0f);
+	m_graphEditor = new Graph2DEditor();
 
-	// m_player->SetBehaviour(new SeekBehaviour());
-	// m_player->SetBehaviour(new FleeBehaviour());
+	m_graph = new Graph2D();
+
+	float spacing = 50;
+	int numRows = m_windowHeight / spacing - 2;
+	int numCols = m_windowWidth / spacing - 2;
+
+	for (int y = 0; y < numRows; y++)
+	{
+		for (int x = 0; x < numCols; x++)
+		{
+			m_graph->AddNode({
+				x * spacing + GetRandomValue(60, 80),
+				y * spacing + GetRandomValue(60, 80)
+			});
+		}
+	}
+
+	for (auto node : m_graph->GetNodes())
+	{
+		std::vector<Graph2D::Node*> nearbyNodes;
+		m_graph->GetNearbyNodes(node->data, m_graphEditor->GetNodeRadius(), nearbyNodes);
+
+		for (auto connectedNode : nearbyNodes)
+		{
+			if (connectedNode == node)
+				continue;
+
+			float dist = Vector2Distance(node->data, connectedNode->data);
+			m_graph->AddEdge(node, connectedNode, dist);
+			m_graph->AddEdge(connectedNode, node, dist);
+		}
+	}
+
+	m_graphEditor->SetGraph(m_graph);
+
+	m_graphEditor->GetGraph()->PathFind(m_graphEditor->GetGraph()->GetNodes().back());
 }
 
 void Application::Unload()
 {
-	delete m_player1;
-	m_player1 = nullptr;
+	delete m_graph;
+	m_graph = nullptr;
 }
 
 void Application::Update(float deltaTime)
 {
-	m_player1->Update(deltaTime);
+	m_graphEditor->Update(deltaTime);
 }
 
 void Application::Draw()
 {
 	BeginDrawing();
-	ClearBackground(RAYWHITE);
-
-	m_player1->Draw();
+	ClearBackground(BLACK);
+	
+	m_graphEditor->Draw();
 
 	EndDrawing();
 }
